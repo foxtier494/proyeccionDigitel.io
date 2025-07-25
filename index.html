@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Expansión Estratégico - Interconexa Network</title>
+    <!-- Tailwind CSS Play CDN (uso libre) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN (uso libre) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome CDN (iconos de uso libre) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0V4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts (Inter, uso libre) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Tech Blue & Warm Neutrals" -->
+    <!-- Application Structure Plan: A single-page dashboard designed for executive review. The structure flows from high-level opportunity to detailed projections, technical validation, financial viability, execution, and future vision. Key sections include: 1) Hero with the core 'ask' and vision. 2) Opportunity Dashboard with key market stats and competitive analysis. 3) An Interactive Growth Projection chart and slider, the core dynamic element for bandwidth justification. 4) A comprehensive Technical Infrastructure section detailing network design, equipment, and emphasizing OLT scalability. 5) A new "Mapa de Expansión Geográfica" section with two subsections for initial and future areas, integrating visual maps. 6) A dedicated Financial Projections section. 7) A detailed Execution Timeline. 8) An expanded Future Vision section. This structure provides a complete, persuasive narrative, guiding the user through the 'why', 'how', 'what's next', and 'financial viability', making the business case compelling and easy to grasp for rapid expansion, with visual aids. -->
+    <!-- Visualization & Content Choices: 1) Market Stats: Goal=Inform -> Method=HTML/CSS Cards with Font Awesome icons -> Interaction=None -> Justification=Quickly convey market size, value proposition, and competitive edge using universally free assets. 2) Growth Projection: Goal=Explore/Change -> Method=Chart.js Line Chart + JS-powered slider/cards -> Interaction=User drags slider to update chart and data cards for each month -> Justification=Transforms the static report table into an engaging, interactive forecast that clearly justifies bandwidth needs over time and highlights rapid growth. 3) Network Diagram: Goal=Organize/Inform -> Method=HTML/CSS diagram with text -> Interaction=None -> Justification=Visually confirms technical readiness, hybrid network approach, and OLT capacity without using forbidden SVG/Mermaid formats. 4) Geographical Maps: Goal=Inform/Visualize -> Method=HTML <img> tags with fallbacks -> Interaction=None -> Justification=Provides clear visual context of the expansion areas, enhancing understanding of the project's scope. 5) Financials/Timeline/Vision: Goal=Inform -> Method=Detailed text blocks with HTML/CSS lists/cards -> Interaction=None -> Justification=Provides essential business context and future plans in a clear, readable format. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #0d6efd;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #0d6efd;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .highlight-dot {
+            position: absolute;
+            background-color: #dc3545;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: all 0.2s ease-in-out;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-20">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-900">
+                <span class="text-blue-600">Interconexa</span> Network
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#oportunidad" class="text-gray-600 hover:text-blue-600">Oportunidad</a>
+                <a href="#proyeccion" class="text-gray-600 hover:text-blue-600">Proyección</a>
+                <a href="#infraestructura" class="text-gray-600 hover:text-blue-600">Infraestructura</a>
+                <a href="#mapa" class="text-gray-600 hover:text-blue-600">Mapa de Expansión</a>
+                <a href="#financiero" class="text-gray-600 hover:text-blue-600">Financiero</a>
+                <a href="#cronograma" class="text-gray-600 hover:text-blue-600">Cronograma</a>
+                <a href="#vision" class="text-gray-600 hover:text-blue-600">Visión a Futuro</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section class="text-center mb-20">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-4">Plan Estratégico de Expansión: Conectando el Futuro</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto">
+                Interconexa Network se posiciona como el <b>aliado estrategico clave para Digitel en la expansión de servicios de internet de alta calidad</b>.
+                Nuestra propuesta se centra en las zonas de <b><b>La Pedrera</b>, El Milagro y Abejales</b>, donde una <b>demanda insatisfecha</b>  y un <b>mercado maduro</b> esperan una <b>conectividad superior</b>.
+                Solicitamos una <b>capacidad inicial de 1 Gbps</b> para estas nuevas áreas, la cual, sumada a nuestra base de <b>500 clientes existentes</b>, impulsará un <b>crecimiento sólido, sostenible y lleno de potencial.</b>
+                Estamos listos para demostrar cómo nuestra <b>infraestructura, estrategia comercial y compromiso con la reinversión</b> no solo impulsan una expansión ágil y rentable, sino que <b>también fortalecen una alianza duradera y beneficiosa para ambas partes</b>.
+            </p>
+        </section>
+
+        <section id="oportunidad" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-12">Dashboard de Oportunidad de Mercado: Un Terreno Fértil para la Conectividad</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                Hemos realizado un análisis profundo del mercado en <b><b>La Pedrera</b>, El Milagro y Abejales</b>, identificando un potencial de crecimiento significativo y una clara necesidad de un servicio de internet superior.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <div class="text-blue-600 mb-3">
+                        <i class="fas fa-home fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Mercado Potencial Identificado</h3>
+                    <p class="text-4xl font-bold text-gray-900">4,500+</p>
+                    <p class="text-gray-500">Hogares y locales comerciales listos para ser conectados. <b>La Pedrera</b>, impulsada por la Troncal 5, muestra un crecimiento comercial constante.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <div class="text-blue-600 mb-3">
+                       <i class="fas fa-dollar-sign fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Propuesta de Valor Disruptiva</h3>
+                    <p class="text-4xl font-bold text-gray-900">$20</p>
+                    <p class="text-gray-500">Plan de 100 Mbps con una garantía de 2 Mbps base y un sistema de QoS avanzado, ofreciendo más valor a un precio competitivo.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                     <div class="text-blue-600 mb-3">
+                        <i class="fas fa-star-half-alt fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Ventaja Competitiva Sólida</h3>
+                    <p class="text-gray-900 font-semibold text-lg">Capitalizamos la insatisfacción con el servicio postventa deficiente del competidor</p>
+                    <p class="text-gray-500">Nuestras oficinas locales garantizan tiempos de respuesta rápidos y una atención al cliente superior.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <div class="text-blue-600 mb-3">
+                       <i class="fas fa-chart-line fa-3x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Penetración Proyectada Agresiva</h3>
+                    <p class="text-4xl font-bold text-gray-900">60%</p>
+                    <p class="text-gray-500">Tasa de penetración estimada en el primer año, impulsada por instalación y primer mes gratis, y equipos en comodato.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="infraestructura" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-12">Infraestructura Técnica: Robustez y Escalabilidad Sin Precedentes</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                Nuestra infraestructura ha sido diseñada con una visión a largo plazo, garantizando no solo la calidad del servicio actual, sino también una capacidad de crecimiento masivo y sin interrupciones.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4">Diseño de Red Híbrida: Cobertura Óptima y Eficiencia</h3>
+                    <p class="text-gray-600 mb-6">
+                        La columna vertebral de nuestra red es una <b>combinación estratégica de Fibra Óptica GPON</b> para las áreas de <b>mayor densidad poblacional </b>y <b>Radioenlace de alta capacidad</b> para cubrir eficientemente <b>zonas rurales, aldeas y estancias campestres</b>.
+                        Esta versatilidad tecnológica nos permite una <b>cobertura amplia y optimizada, llegando a donde otros proveedores no llegan</b>.
+                        Nuestro nodo central en <b>La Pedrera</b> está <b>estratégicamente ubicado cerca del backbone de Digitel</b>, lo que minimiza la latencia y <b>facilita una interconexión facil, ágil y eficiente</b>.
+                        La conexión por radioenlace operará en modo bridge para asegurar un procesamiento mínimo del tráfico y una máxima eficiencia.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center p-4 bg-white rounded-lg shadow border">
+                            <span class="text-blue-600 font-bold mr-4 text-xl">Digitel</span>
+                            <i class="fas fa-arrow-right text-gray-400 text-xl mx-2"></i>
+                            <span class="mx-4 p-2 bg-blue-100 text-blue-800 rounded font-semibold text-lg">Nodo Central (<b>La Pedrera</b>)</span>
+                            <i class="fas fa-arrow-right text-gray-400 text-xl mx-2"></i>
+                            <div class="ml-4">
+                                <p class="font-medium text-lg text-gray-700">Fibra GPON (Urbano)</p>
+                                <p class="font-medium text-lg text-gray-700">Radioenlace (Rural)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mt-6">
+                        Utilizamos splitters 1:8 y 1:16 en nuestra red GPON para garantizar una distribución eficiente de la señal y una calidad de servicio uniforme a cada suscriptor.
+                        Nuestra visión a mediano y largo plazo es la convergencia total a fibra óptica pura en todas las zonas, consolidando aún más la estabilidad y el rendimiento.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4">Capacidad de OLTs: Duplicando la Conexión de Clientes al Instante</h3>
+                    <p class="text-gray-600 mb-6">
+                        Un pilar fundamental de nuestra estrategia de crecimiento es la <b>capacidad intrínseca de nuestras OLTs (Optical Line Terminals).</b>
+                        Nuestras OLTs en cada población a abordar están dispuestas para un <b>crecimiento exponencial</b>.
+                        Cada OLT dispone de <b>8 puertos PON</b>, que son los puntos de conexión física para la fibra óptica que llega a los clientes finales.
+                        Actualmente, de esos 8 puertos, <b>solo 4 están en uso</b>. Esto nos confiere un <b>margen de crecimiento del 100%</b> con el hardware de cabecera existente.
+                        En términos prácticos, esto significa que podemos <b>duplicar nuestra capacidad de conexión de clientes por cada OLT sin necesidad de adquirir nuevo equipo principal</b>.
+                        Esta disponibilidad de puertos no utilizados nos permite una <b>expansión fluida, eficiente y extremadamente rápida</b> a medida que la demanda crece en cada una de las zonas, <b>minimizando los tiempos de despliegue y maximizando la rentabilidad de la inversión inicial</b>. Estamos preparados para una <b>rápida escalabilidad</b>.
+                    </p>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h4 class="font-semibold text-lg mb-3">Estado Actual de Puertos PON por OLT</h4>
+                        <div class="grid grid-cols-4 gap-3">
+                            <div class="w-full h-16 bg-blue-600 rounded-md flex flex-col items-center justify-center text-white font-bold text-sm p-1">Uso<br>Puerto 1</div>
+                            <div class="w-full h-16 bg-blue-600 rounded-md flex flex-col items-center justify-center text-white font-bold text-sm p-1">Uso<br>Puerto 2</div>
+                            <div class="w-full h-16 bg-blue-600 rounded-md flex flex-col items-center justify-center text-white font-bold text-sm p-1">Uso<br>Puerto 3</div>
+                            <div class="w-full h-16 bg-blue-600 rounded-md flex flex-col items-center justify-center text-white font-bold text-sm p-1">Uso<br>Puerto 4</div>
+                            <div class="w-full h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-md flex flex-col items-center justify-center text-gray-500 font-semibold text-sm p-1">Libre<br>Puerto 5</div>
+                            <div class="w-full h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-md flex flex-col items-center justify-center text-gray-500 font-semibold text-sm p-1">Libre<br>Puerto 6</div>
+                            <div class="w-full h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-md flex flex-col items-center justify-center text-gray-500 font-semibold text-sm p-1">Libre<br>Puerto 7</div>
+                            <div class="w-full h-16 bg-gray-200 border-2 border-dashed border-gray-400 rounded-md flex flex-col items-center justify-center text-gray-500 font-semibold text-sm p-1">Libre<br>Puerto 8</div>
+                        </div>
+                        <p class="text-center mt-3 text-gray-600">
+                            4 Puertos PON adicionales disponibles por cada OLT, listos para conectar nuevos clientes de inmediato.
+                            Esto representa una ventaja significativa en la velocidad de despliegue y la eficiencia de la inversión.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mapa" class="mb-20 bg-white p-8 rounded-xl shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-12">Mapa de Expansión Geográfica: Visualizando Nuestro Alcance</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                Para una comprensión clara de nuestro plan de despliegue, presentamos un mapa visual de las zonas que abordaremos inicialmente y nuestra proyección de expansión a futuro.
+                Estas imágenes ilustran la ubicación estratégica de nuestros nodos y la extensión de nuestra red.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-8">
+                <div class="flex flex-col items-center">
+                    <h3 class="text-xl font-semibold mb-4">Fase 1: Zonas de Lanzamiento Inicial</h3>
+                    <img src="img1.png" onerror="this.onerror=null; this.src='https://placehold.co/600x400/E0E0E0/333333?text=Imagen+no+disponible';" alt="Mapa de las zonas iniciales de <b><b>La Pedrera</b>, El Milagro y Abejales</b>" class="rounded-lg shadow-md w-full h-auto max-w-full">
+                    <p class="text-sm text-gray-500 mt-2">Mapa detallado de <b><b>La Pedrera</b>, El Milagro y Abejales</b>, mostrando la ubicación de las OLTs y las torres.</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <h3 class="text-xl font-semibold mb-4">Fase 2: Proyección de Expansión Regional</h3>
+                    <img src="img2.png" onerror="this.onerror=null; this.src='https://placehold.co/600x400/E0E0E0/333333?text=Imagen+no+disponible';" alt="Mapa de la expansión por radioenlace a El Cantón, Guacas, Punta de Piedra y Guallanito" class="rounded-lg shadow-md w-full h-auto max-w-full">
+                    <p class="text-sm text-gray-500 mt-2">Mapa de nuestra visión de expansión a El Cantón, Guacas, Punta de Piedra y Guallanito, utilizando radioenlaces estratégicos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="financiero" class="mb-20 bg-white p-8 rounded-xl shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-12">Proyecciones Financieras: Rentabilidad y Crecimiento Sostenible</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                Nuestra estrategia financiera se basa en un modelo de negocio robusto que garantiza la rentabilidad y un crecimiento sostenido,
+                con un enfoque claro en la reinversión para la mejora continua de la red y el servicio.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-100">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-4 flex items-center">
+                        <i class="fas fa-hand-holding-usd mr-3 text-blue-500"></i> 1. Inversión Inicial (CAPEX) Optimizada
+                    </h3>
+                    <p class="text-gray-700">
+                        Gracias a nuestra <b>infraestructura existente</b> y un eficiente <b>modelo de equipos en comodato</b>, hemos <b>optimizado significativamente el costo total estimado</b> del despliegue de la red, que incluye fibra, equipos de cabecera y de cliente, y mano de obra. Esta <b>gestión inteligente del CAPEX maximiza nuestro retorno de la inversión</b> y acelera el tiempo de despliegue.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-100">
+                    <h3 class="text-2xl font-semibold text-green-700 mb-4 flex items-center">
+                        <i class="fas fa-money-bill-wave mr-3 text-green-500"></i> 2. Costos Operativos (OPEX) Eficientes
+                    </h3>
+                    <p class="text-gray-700">
+                        Nuestros costos fijos mensuales (nómina, alquiler, electricidad, mantenimiento de la red, sin incluir la inversión en servicios de Digitel) han sido <b>cuidadosamente ajustados</b>, reflejando una <b>estructura operativa excepcionalmente eficiente y de bajo coste</b>. Esta optimización nos permite <b>maximizar la rentabilidad interna</b> y <b>destinar un volumen significativo de recursos directamente al crecimiento y la expansión</b>, asegurando siempre una <b>calidad de servicio superior</b> sin incurrir en gastos superfluos.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-100 md:col-span-1">
+                    <h3 class="text-2xl font-semibold text-purple-700 mb-4 flex items-center">
+                        <i class="fas fa-balance-scale-right mr-3 text-purple-500"></i> 3. Punto de Equilibrio Acelerado
+                    </h3>
+                    <p class="text-gray-700">
+                        Hemos calculado un <b>punto de equilibrio</b> que nos permitirá alcanzar la <b>rentabilidad en un mediano plazo</b>. Nuestra <b>agresiva estrategia de penetración de mercado</b>, combinada con un <b>modelo de negocio rentable</b> y la <b>capacidad de reinversión constante</b>, nos impulsará a <b>generar excedentes rápidamente</b>. Esto no solo asegura nuestra <b>solidez financiera</b>, sino que también garantiza el <b>pago puntual y creciente por la capacidad contratada con Digitel</b>.
+                    </p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-inner border border-gray-100 md:col-span-3">
+                    <h3 class="text-2xl font-semibold text-red-700 mb-4 flex items-center">
+                        <i class="fas fa-handshake mr-3 text-red-500"></i> 4. Colaboración Estratégica y Tarifas Atractivas: Fomentando un Crecimiento Compartido y Sostenible.
+                    </h3>
+                    <p class="text-gray-700">
+                        Considerando la <b>intensa y creciente competitividad del mercado de conectividad actual</b>, y las diversas ofertas de capacidad que ya hemos evaluado, <b>valoramos profundamente que Digitel nos haya abierto sus puertas con una confianza genuina en nuestra empresa y en este ambicioso proyecto de desarrollo</b>. Buscamos en Digitel no solo un proveedor, sino un <b>verdadero aliado comercial estratégico</b>, y deseamos contar activamente con su <b>respaldo en cada paso de este emocionante camino</b>.
+                        <br>
+                        Es <b>fundamental</b> que la tarifa por capacidad que nos ofrezcan sea <b>altamente competitiva y se alinee con las realidades del mercado</b>, ya que este factor <b>es determinante para nuestra capacidad de ofrecer planes disruptivos y atractivos</b> que aceleren exponencialmente la adquisición de clientes.
+                        <br>
+                        Una estructura de precios que reconozca la dinámica actual del mercado no solo fortalecerá nuestra propuesta de valor al cliente final, sino que, de manera crucial, nos permitirá <b>impulsar un volumen de ancho de banda contratado con ustedes mucho más rápido y significativo</b>. Este <b>enfoque colaborativo es esencial para maximizar nuestro impacto en el mercado y satisfacer las necesidades de nuestros usuarios de manera efectiva</b>.
+                        <br>
+                        En definitiva, al consolidarnos como un <b>aliado de alto volumen y alta eficiencia, esta sinergia facilitará un crecimiento de ingresos acelerado y robusto para Digitel, garantizando una alianza comercial sólida y mutuamente enriquecedora. Juntos, podremos construir una vida comercial próspera y sostenible en el corto, mediano y largo plazo, creando valor significativo para ambas empresas.</b>
+                  </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Sección de Cronograma de Ejecución -->
+        <section id="cronograma" class="mb-20">
+            <h2 class="text-3xl font-bold text-center mb-12">Cronograma de Ejecución: Despliegue Ágil y Eficiente</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+                Nuestro plan de ejecución está diseñado para un despliegue rápido y metódico, asegurando la operatividad en el menor tiempo posible y la expansión continua.
+            </p>
+            <div class="relative wrap overflow-hidden p-10 h-full">
+                <div class="border-2-2 absolute border-opacity-20 border-blue-700 h-full border" style="left: 50%"></div>
+                <!-- right timeline -->
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-8 h-8 rounded-full">
+                        <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
+                    </div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="mb-3 font-bold text-gray-800 text-xl">Fase 1: Despliegue de la Red Troncal de Fibra (¡Completada!)</h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">
+                            Esta fase ya está <b>cubierta y operativa.</b> Contamos con una <b>troncal de fibra desplegada</b> en las zonas a cubrir, lo que <b>reduce drásticamente el tiempo y la inversión inicial requerida.</b>
+                            Además, la semana entrante se está introduciendo el proyecto de ampliación de zona de explotación ante CONATEL, demostrando nuestro avance regulatorio y proactividad.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- left timeline -->
+                <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-8 h-8 rounded-full">
+                        <h1 class="mx-auto font-semibold text-lg text-white">2</h1>
+                    </div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="mb-3 font-bold text-gray-800 text-xl">Fase 2: Instalación de OLT, NAP y Pruebas de Red (¡Muy Avanzada!)</h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">
+                            <b>Esta fase también está muy avanzada</b>. Actualmente, tenemos la <b>capacidad para alimentar y mejorar el servicio de nuestros 500 clientes existentes</b>. Para la interconexión con Digitel, nuestra central está <b>estratégicamente ubicada a solo 800 metros de su estación backbone en La Pedrera</b>. Nosotros podemos realizar el trabajo de <b>instalación de esta fibra troncal</b>, dejando el cable listo para la conexión final por parte de Digitel, o si nos lo permiten, completar todo el trabajo, <b>ya que contamos con todas las herramientas necesarias (fusionadoras, OTDR, etc.)</b>. Esto <b>minimiza significativamente la inversión y el esfuerzo por parte de Digitel, acelerando la puesta en marcha de la interconexión.</b>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- right timeline -->
+                <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                    <div class="order-1 w-5/12"></div>
+                    <div class="z-20 flex items-center order-1 bg-blue-600 shadow-xl w-8 h-8 rounded-full">
+                        <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
+                    </div>
+                    <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4">
+                        <h3 class="mb-3 font-bold text-gray-800 text-xl">Fase 3: Inicio de Campaña de Marketing e Instalaciones a Clientes (¡Próxima Implementación!)</h3>
+                        <p class="text-sm leading-snug tracking-wide text-gray-600 text-opacity-100">
+                           Una vez establecida la <b>interconexión activa con Digitel</b> y la <b>capacidad para proveer y mejorar el servicio a nuestros clientes, lanzaremos una campaña de marketing intensiva</b>. Nuestro objetivo es <b>crecer rápidamente en la zona, capitalizando la demanda existente</b> y nuestra <b>ventaja competitiva en servicio al cliente</b>. La <b>velocidad de despliegue es clave</b>, y estamos <b>preparados para una rápida adopción</b>.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="proyeccion" class="mb-20 bg-white p-8 rounded-xl shadow-xl border border-gray-200">
+            <h2 class="text-3xl font-bold text-center mb-4">Proyección de Crecimiento Interactivo (Año 1): Demanda de Capacidad en Tiempo Real</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                Esta sección ilustra nuestra proyección de crecimiento de clientes y la demanda de ancho de banda mes a mes.
+                El deslizador le permite visualizar cómo el aumento en nuestra base de clientes se traduce directamente en la necesidad de escalar la capacidad de internet,
+                justificando nuestras solicitudes de ancho de banda y demostrando la rapidez de nuestra expansión.
+            </p>
+            
+            <div class="chart-container mb-8">
+                <canvas id="growthChart"></canvas>
+                <div id="highlight-dot" class="highlight-dot" style="display: none;"></div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-center mb-8">
+                <div>
+                    <p class="text-sm text-gray-500">Mes</p>
+                    <p id="data-month" class="text-2xl font-bold">1</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Nuevos Clientes</p>
+                    <p id="data-new-clients" class="text-2xl font-bold">50</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Clientes Totales</p>
+                    <p id="data-total-clients" class="text-2xl font-bold">550</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Ancho de Banda (Mbps)</p>
+                    <p id="data-bandwidth" class="text-2xl font-bold">1,100</p>
+                </div>
+                <div class="col-span-2 md:col-span-1 lg:col-span-1">
+                    <p class="text-sm text-gray-500">Utilización</p>
+                    <p id="data-utilization" class="text-2xl font-bold">100%</p>
+                </div>
+            </div>
+
+            <div class="px-4">
+                <input id="month-slider" type="range" min="0" max="11" value="0" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                <div class="flex justify-between text-xs text-gray-500 mt-2">
+                    <span>Mes 1</span>
+                    <span>Mes 3</span>
+                    <span>Mes 6</span>
+                    <span>Mes 9</span>
+                    <span>Mes 12</span>
+                </div>
+            </div>
+            
+            <div id="milestone-display" class="mt-6 text-center text-lg font-semibold text-red-600 h-6"></div>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto mt-8">
+                La proyección muestra cómo la capacidad inicial de 1 Gbps será utilizada rápidamente por nuestra base de 500 clientes existentes y los nuevos suscriptores.
+                Esto subraya la necesidad crítica de aumentos de capacidad graduales, que serán el resultado directo de nuestra estrategia de reinversión en equipos de última generación (Wi-Fi 5 y 6) para soportar el acceso de 100 Mbps con una garantía de 2 Mbps.
+                Un precio competitivo por parte de Digitel es vital para mantener este ciclo virtuoso de crecimiento y reinversión.
+            </p>
+        </section>
+
+    <section> 
+
+    <div class="bg-white p-6 rounded-xl shadow-xl border border-gray-200 max-w-full overflow-x-auto">
+        <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Proyección Detallada de Crecimiento y Demanda de Capacidad (Año 1)</h2>
+        <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">
+            Esta tabla presenta un desglose mes a mes de nuestras proyecciones de nuevos usuarios, y la totalidad de ellos, demanda de ancho de banda, capacidad contratada, puntos de referencia o momentos significativos en el tiempo que marcan el progreso y la consecución de objetivos específicos dentro de la proyección de usuarios y capacidad, Ofreciendo una visión clara y concisa de la evolución de nuestra operación y la justificación de nuestras necesidades en capacidad.
+        </p>
+        <table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">
+            <thead class="bg-blue-600 text-white">
+                <tr>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider rounded-tl-lg">Trimestre</th>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider">Mes</th>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider">Nuevos Clientes (Meta)</th>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider">Clientes Totales (Acumulado)</th>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider">Ancho de Banda Requerido (Mbps)</th>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider">Capacidad Contratada (Mbps)</th>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider">Utilización de Capacidad</th>
+                    <th class="py-3 px-4 text-left font-semibold text-sm uppercase tracking-wider rounded-tr-lg">Hito Clave</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700 divide-y divide-gray-200">
+                <tr class="bg-gray-100">
+                    <td class="py-3 px-4 font-semibold">Pre-T1</td>
+                    <td class="py-3 px-4">-</td>
+                    <td class="py-3 px-4">-</td>
+                    <td class="py-3 px-4">500 (Base Existente)</td>
+                    <td class="py-3 px-4">1,000</td>
+                    <td class="py-3 px-4">1,000</td>
+                    <td class="py-3 px-4 text-red-600 font-bold">100%</td>
+                    <td class="py-3 px-4">Base Operacional</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4 font-semibold" rowspan="3">T1</td>
+                    <td class="py-3 px-4">1</td>
+                    <td class="py-3 px-4">50</td>
+                    <td class="py-3 px-4">550</td>
+                    <td class="py-3 px-4">1,100</td>
+                    <td class="py-3 px-4">1,100</td>
+                    <td class="py-3 px-4 text-red-600 font-bold">100%</td>
+                    <td class="py-3 px-4">Lanzamiento Nueva Zona</td>
+                </tr>
+                <tr class="bg-white">
+                    <td class="py-3 px-4">2</td>
+                    <td class="py-3 px-4">70</td>
+                    <td class="py-3 px-4">620</td>
+                    <td class="py-3 px-4">1,240</td>
+                    <td class="py-3 px-4">1,250</td>
+                    <td class="py-3 px-4 text-orange-600">99.2%</td>
+                    <td class="py-3 px-4">Solicitud Aumento Capacidad (+150 Mbps)</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4">3</td>
+                    <td class="py-3 px-4">90</td>
+                    <td class="py-3 px-4">710</td>
+                    <td class="py-3 px-4">1,420</td>
+                    <td class="py-3 px-4">1,500</td>
+                    <td class="py-3 px-4">94.7%</td>
+                    <td class="py-3 px-4">Solicitud Aumento Capacidad (+250 Mbps)</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4 font-semibold" rowspan="3">T2</td>
+                    <td class="py-3 px-4">4</td>
+                    <td class="py-3 px-4">110</td>
+                    <td class="py-3 px-4">820</td>
+                    <td class="py-3 px-4">1,640</td>
+                    <td class="py-3 px-4">1,750</td>
+                    <td class="py-3 px-4">93.7%</td>
+                    <td class="py-3 px-4">Solicitud Aumento Capacidad (+250 Mbps)</td>
+                </tr>
+                <tr class="bg-white">
+                    <td class="py-3 px-4">5</td>
+                    <td class="py-3 px-4">130</td>
+                    <td class="py-3 px-4">950</td>
+                    <td class="py-3 px-4">1,900</td>
+                    <td class="py-3 px-4">2,000</td>
+                    <td class="py-3 px-4 text-orange-600">95%</td>
+                    <td class="py-3 px-4">Activación 2do Gbps (Total 2000 Mbps)</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4">6</td>
+                    <td class="py-3 px-4">150</td>
+                    <td class="py-3 px-4">1,100</td>
+                    <td class="py-3 px-4">2,200</td>
+                    <td class="py-3 px-4">2,300</td>
+                    <td class="py-3 px-4">95.6%</td>
+                    <td class="py-3 px-4">Solicitud Aumento Capacidad (+300 Mbps)</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4 font-semibold" rowspan="3">T3</td>
+                    <td class="py-3 px-4">7</td>
+                    <td class="py-3 px-4">170</td>
+                    <td class="py-3 px-4">1,270</td>
+                    <td class="py-3 px-4">2,540</td>
+                    <td class="py-3 px-4">2,750</td>
+                    <td class="py-3 px-4">92.3%</td>
+                    <td class="py-3 px-4">Solicitud Aumento Capacidad (+450 Mbps)</td>
+                </tr>
+                <tr class="bg-white">
+                    <td class="py-3 px-4">8</td>
+                    <td class="py-3 px-4">180</td>
+                    <td class="py-3 px-4">1,450</td>
+                    <td class="py-3 px-4">2,900</td>
+                    <td class="py-3 px-4">3,150</td>
+                    <td class="py-3 px-4 text-orange-600">92%</td>
+                    <td class="py-3 px-4">Activación 3er Gbps (Total 3000 Mbps)</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4">9</td>
+                    <td class="py-3 px-4">200</td>
+                    <td class="py-3 px-4">1,650</td>
+                    <td class="py-3 px-4">3,300</td>
+                    <td class="py-3 px-4">3,500</td>
+                    <td class="py-3 px-4">94.2%</td>
+                    <td class="py-3 px-4">Solicitud Aumento Capacidad (+350 Mbps)</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4 font-semibold" rowspan="3">T4</td>
+                    <td class="py-3 px-4">10</td>
+                    <td class="py-3 px-4">200</td>
+                    <td class="py-3 px-4">1,850</td>
+                    <td class="py-3 px-4">3,700</td>
+                    <td class="py-3 px-4">4,000</td>
+                    <td class="py-3 px-4">92.5%</td>
+                    <td class="py-3 px-4">Solicitud Aumento Capacidad (+500 Mbps)</td>
+                </tr>
+                <tr class="bg-white">
+                    <td class="py-3 px-4">11</td>
+                    <td class="py-3 px-4">200</td>
+                    <td class="py-3 px-4">2,050</td>
+                    <td class="py-3 px-4">4,100</td>
+                    <td class="py-3 px-4">4,500</td>
+                    <td class="py-3 px-4 text-orange-600">91.1%</td>
+                    <td class="py-3 px-4">Activación 4to Gbps (Total 4000 Mbps)</td>
+                </tr>
+                <tr class="bg-blue-50">
+                    <td class="py-3 px-4 rounded-bl-lg">12</td>
+                    <td class="py-3 px-4">150</td>
+                    <td class="py-3 px-4">2,200</td>
+                    <td class="py-3 px-4">4,400</td>
+                    <td class="py-3 px-4">4,800</td>
+                    <td class="py-3 px-4">91.6%</td>
+                    <td class="py-3 px-4 rounded-br-lg">Solicitud Aumento Capacidad (+300 Mbps)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    </section>   
+    <br>
+    <br>
+    <br>
+
+
+        
+        <section id="vision" class="text-center bg-blue-600 text-white p-12 rounded-xl">
+            <h2 class="text-3xl font-bold mb-4">Visión a Futuro: Expansión Regional Estratégica</h2>
+            <p class="max-w-3xl mx-auto mb-8">
+               Nuestra visión de crecimiento va más allá de las áreas iniciales. Hemos identificado zonas adicionales con un alto potencial que son estratégicamente idóneas para su incorporación ágil en nuestro proyecto de ampliación de cobertura. 
+                Esta expansión planificada no solo actúa como una hoja de ruta clara para el desarrollo de la red de Digitel, sino que también les permitirá acceder a nuevos mercados de manera indirecta y eficiente. A través de esta propuesta, estamos comprometidos a crear oportunidades que fortalezcan nuestra presencia conjunta y generen un impacto positivo en la comunidad, asegurando un futuro próspero y sostenible para ambas partes.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 text-lg font-semibold">
+                <span class="bg-white text-blue-700 px-4 py-2 rounded-full shadow-md">El Cantón</span>
+                <span class="bg-white text-blue-700 px-4 py-2 rounded-full shadow-md">Guacas</span>
+                <span class="bg-white text-blue-700 px-4 py-2 rounded-full shadow-md">Punta de Piedra</span>
+                <span class="bg-white text-blue-700 px-4 py-2 rounded-full shadow-md">Guallanito</span>
+            </div>
+            <p class="max-w-3xl mx-auto mt-6 text-gray-200">
+                Estas poblaciones, por su proximidad a <b>La Pedrera</b> y entre sí, son clave para una expansión eficiente y rentable, asegurando una cobertura integral y un crecimiento sostenido para Interconexa Network en la región.
+            </p>
+        </section>
+
+
+
+
+
+    </main>
+
+    <footer class="bg-gray-900 text-white mt-20">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl font-bold">Interconexa Network</h3>
+                    <p class="text-gray-400">Conectando el futuro de Venezuela.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-2">Próximos Pasos Sugeridos para una Alianza Exitosa:</h4>
+                    <ul class="list-disc list-inside text-gray-300">
+                        <li>Revisión y aprobación de la capacidad inicial de 1 Gbps.</li>
+                        <li>Coordinación acelerada de la interconexión física en <b>La Pedrera</b>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const projectionData = [
+            { month: 1, newClients: 50, totalClients: 550, requiredBw: 1100, contractedBw: 1100, milestone: "Lanzamiento Nueva Zona" },
+            { month: 2, newClients: 70, totalClients: 620, requiredBw: 1240, contractedBw: 1250, milestone: "Solicitud Aumento Capacidad (+150 Mbps)" },
+            { month: 3, newClients: 90, totalClients: 710, requiredBw: 1420, contractedBw: 1500, milestone: "Solicitud Aumento Capacidad (+250 Mbps)" },
+            { month: 4, newClients: 110, totalClients: 820, requiredBw: 1640, contractedBw: 1750, milestone: "Solicitud Aumento Capacidad (+250 Mbps)" },
+            { month: 5, newClients: 130, totalClients: 950, requiredBw: 1900, contractedBw: 2000, milestone: "🚀 Activación 2do Gbps (Total 2000 Mbps)" },
+            { month: 6, newClients: 150, totalClients: 1100, requiredBw: 2200, contractedBw: 2300, milestone: "Solicitud Aumento Capacidad (+300 Mbps)" },
+            { month: 7, newClients: 170, totalClients: 1270, requiredBw: 2540, contractedBw: 2750, milestone: "Solicitud Aumento Capacidad (+450 Mbps)" },
+            { month: 8, newClients: 180, totalClients: 1450, requiredBw: 2900, contractedBw: 3150, milestone: "🚀 Activación 3er Gbps (Total 3000 Mbps)" },
+            { month: 9, newClients: 200, totalClients: 1650, requiredBw: 3300, contractedBw: 3500, milestone: "Solicitud Aumento Capacidad (+350 Mbps)" },
+            { month: 10, newClients: 200, totalClients: 1850, requiredBw: 3700, contractedBw: 4000, milestone: "🚀 Activación 4to Gbps (Total 4000 Mbps)" },
+            { month: 11, newClients: 200, totalClients: 2050, requiredBw: 4100, contractedBw: 4500, milestone: "Solicitud Aumento Capacidad (+500 Mbps)" },
+            { month: 12, newClients: 150, totalClients: 2200, requiredBw: 4400, contractedBw: 4800, milestone: "Necesidad 5to Gbps" },
+        ];
+
+        const monthSlider = document.getElementById('month-slider');
+        const dataMonth = document.getElementById('data-month');
+        const dataNewClients = document.getElementById('data-new-clients');
+        const dataTotalClients = document.getElementById('data-total-clients');
+        const dataBandwidth = document.getElementById('data-bandwidth');
+        const dataUtilization = document.getElementById('data-utilization');
+        const milestoneDisplay = document.getElementById('milestone-display');
+        const highlightDot = document.getElementById('highlight-dot');
+
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        const growthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: projectionData.map(d => `Mes ${d.month}`),
+                datasets: [
+                    {
+                        label: 'Clientes Totales',
+                        data: projectionData.map(d => d.totalClients),
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: 'Ancho de Banda Requerido (Mbps)',
+                        data: projectionData.map(d => d.requiredBw),
+                        borderColor: '#198754',
+                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                        fill: false,
+                        tension: 0.4,
+                        yAxisID: 'y1',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Clientes'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Ancho de Banda (Mbps)'
+                        },
+                        grid: {
+                            drawOnChartArea: false, 
+                        },
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('es-VE').format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateDashboard(monthIndex) {
+            const data = projectionData[monthIndex];
+            dataMonth.textContent = data.month;
+            dataNewClients.textContent = new Intl.NumberFormat('es-VE').format(data.newClients);
+            dataTotalClients.textContent = new Intl.NumberFormat('es-VE').format(data.totalClients);
+            dataBandwidth.textContent = new Intl.NumberFormat('es-VE').format(data.requiredBw);
+            
+            const utilization = (data.requiredBw / data.contractedBw * 100).toFixed(1);
+            dataUtilization.textContent = `${utilization}%`;
+
+            milestoneDisplay.textContent = data.milestone.startsWith('🚀') ? data.milestone : '';
+
+            const meta = growthChart.getDatasetMeta(0);
+            const point = meta.data[monthIndex];
+            
+            if (point) {
+                highlightDot.style.display = 'block';
+                highlightDot.style.left = `${point.x}px`;
+                highlightDot.style.top = `${point.y}px`;
+            }
+        }
+
+        monthSlider.addEventListener('input', (event) => {
+            updateDashboard(event.target.value);
+        });
+
+        updateDashboard(0);
+    </script>
+</body>
+</html>
